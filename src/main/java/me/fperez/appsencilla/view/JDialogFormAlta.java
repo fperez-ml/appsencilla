@@ -4,7 +4,12 @@
  */
 package me.fperez.appsencilla.view;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Calendar;
 import java.util.Date;
+import javax.swing.JOptionPane;
 import me.fperez.appsencilla.model.Cliente;
 
 /**
@@ -12,7 +17,7 @@ import me.fperez.appsencilla.model.Cliente;
  * @author fperez
  */
 public class JDialogFormAlta extends javax.swing.JDialog {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JDialogFormAlta.class.getName());
     private JFramePrincipal pantallaPrincipal;
 
@@ -147,18 +152,33 @@ public class JDialogFormAlta extends javax.swing.JDialog {
         String appellidos = this.jTextFieldApellidos.getText();
         Date fechaAlta = (Date) this.jSpinnerFechaAlta.getValue();
         String provincia = (String) this.jComboBoxProvincia.getSelectedItem();
+
+        //Validación de fechas
+        //Obtenemos el año actual
+        int anyoActual = LocalDate.now().getDayOfYear();
         
-        Cliente cliente = new Cliente(nombre, appellidos, fechaAlta, provincia);
+        //Convertimos al fecha Alta a calendario para obtener el año
+        Calendar calendario = Calendar.getInstance();
+        calendario.setTime(fechaAlta);
+        int fechaAltaAnyo = calendario.get(Calendar.YEAR);
         
-        this.pantallaPrincipal.altaCliente(cliente);
-        this.dispose();
+        //Comparamos los años y no dejamos crear el alta
+        if (fechaAltaAnyo + 1 > anyoActual) {
+            JOptionPane.showMessageDialog(this, "ERROR!!! La fecha no es válida", "ERROR Alta Cita", JOptionPane.ERROR_MESSAGE);
+        } else {
+            System.out.println(fechaAlta);
+
+            Cliente cliente = new Cliente(nombre, appellidos, fechaAlta, provincia);
+
+            this.pantallaPrincipal.altaCliente(cliente);
+            this.dispose();
+        }
     }//GEN-LAST:event_jButtonAltaActionPerformed
 
     private void jButtonCancelarAltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarAltaActionPerformed
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButtonCancelarAltaActionPerformed
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
