@@ -155,7 +155,7 @@ public class JDialogFormAlta extends javax.swing.JDialog {
 
         //Validación de fechas
         //Obtenemos el año actual
-        int anyoActual = LocalDate.now().getDayOfYear();
+        int anyoActual = LocalDate.now().getYear();
         
         //Convertimos al fecha Alta a calendario para obtener el año
         Calendar calendario = Calendar.getInstance();
@@ -163,7 +163,7 @@ public class JDialogFormAlta extends javax.swing.JDialog {
         int fechaAltaAnyo = calendario.get(Calendar.YEAR);
         
         //Comparamos los años y no dejamos crear el alta
-        if (fechaAltaAnyo + 1 > anyoActual) {
+        if (fechaAltaAnyo > anyoActual) {
             JOptionPane.showMessageDialog(this, "ERROR!!! La fecha no es válida", "ERROR Alta Cita", JOptionPane.ERROR_MESSAGE);
         } else {
             System.out.println(fechaAlta);

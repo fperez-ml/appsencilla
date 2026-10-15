@@ -5,7 +5,11 @@
 package me.fperez.appsencilla.view;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
+import java.util.List;
 import me.fperez.appsencilla.model.Cliente;
+import me.fperez.appsencilla.model.persistencia.ClienteDAO;
+import me.fperez.appsencilla.model.persistencia.mariaDB.ClienteDAOImp;
 
 /**
  *
@@ -21,6 +25,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     public JFramePrincipal() {
         initComponents();
         this.iniTable();
+        this.cargarClientes();
         java.net.URL imgURL = getClass().getResource("/me/fperez/appsencilla/recursos/dummy_app.jpg");
         if (imgURL != null) {
             jLabelIcono.setIcon(new javax.swing.ImageIcon(imgURL));
@@ -46,6 +51,26 @@ public class JFramePrincipal extends javax.swing.JFrame {
         String[] columnas = {"Nombre", "Apellidos", "Fecha de Alta", "Provincia"};
         dtm.setColumnIdentifiers(columnas);
         this.jTableClientes.setModel(dtm);
+    }
+
+    private void cargarClientes() {
+        List<Cliente> clientes;
+        try {
+            ClienteDAO clienteDAO = new ClienteDAOImp();
+            clientes = clienteDAO.list();
+        } catch (RuntimeException ex) {
+            logger.log(java.util.logging.Level.SEVERE, "Error cargando los clientes", ex);
+            JOptionPane.showMessageDialog(this,
+                    "No se pudieron cargar los clientes. Consulte el registro para más detalles.",
+                    "Error al cargar clientes", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+        dtm.setRowCount(0);
+        for (Cliente cliente : clientes) {
+            dtm.addRow(cliente.clienteToArray());
+        }
     }
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

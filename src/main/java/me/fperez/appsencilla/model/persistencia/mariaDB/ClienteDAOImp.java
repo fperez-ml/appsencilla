@@ -28,7 +28,7 @@ public class ClienteDAOImp implements ClienteDAO {
     private final String dbHostName;
 
     public ClienteDAOImp() {
-        this("localhost", "3306", "appsencilla", "root", "");
+        this("localhost", "3306", "java-db", "java-db", "java-db");
     }
 
     public ClienteDAOImp(String dbHostName, String dbPort, String dbName,
@@ -52,7 +52,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     @Override
     public Cliente read(String pk) {
-        String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM clientes WHERE nombre = '"
+        String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM cliente WHERE nombre = '"
                 + pk + "'";
         try (Connection con = getConnection(); Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql)) {
@@ -68,7 +68,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     @Override
     public void create(Cliente cliente) {
-        String sql = "INSERT INTO clientes (nombre, apellidos, fechaAlta, provincia) VALUES ('"
+        String sql = "INSERT INTO cliente (nombre, apellidos, fechaAlta, provincia) VALUES ('"
                 + cliente.getNombre() + "', '"
                 + cliente.getApellidos() + "', '"
                 + new java.sql.Date(cliente.getFechaAlta().getTime()) + "', '"
@@ -82,7 +82,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     @Override
     public void update(Cliente cliente) {
-        String sql = "UPDATE clientes SET nombre = '" + cliente.getNombre() + "', apellidos = '"
+        String sql = "UPDATE cliente SET nombre = '" + cliente.getNombre() + "', apellidos = '"
                 + cliente.getApellidos() + "', fechaAlta = '"
                 + new java.sql.Date(cliente.getFechaAlta().getTime()) + "', provincia = '"
                 + cliente.getProvincia() + "' WHERE nombre = '" + cliente.getNombre() + "'";
@@ -95,7 +95,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     @Override
     public void delete(Cliente cliente) {
-        String sql = "DELETE FROM clientes WHERE nombre = '" + cliente.getNombre() + "'";
+        String sql = "DELETE FROM cliente WHERE nombre = '" + cliente.getNombre() + "'";
         try (Connection con = getConnection(); Statement st = con.createStatement()) {
             st.executeUpdate(sql);
         } catch (SQLException e) {
@@ -105,7 +105,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     @Override
     public List<Cliente> list() {
-        String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM clientes";
+        String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM cliente";
         List<Cliente> clientes = new ArrayList<>();
         try (Connection con = getConnection(); Statement st = con.createStatement();
                 ResultSet rs = st.executeQuery(sql)) {
