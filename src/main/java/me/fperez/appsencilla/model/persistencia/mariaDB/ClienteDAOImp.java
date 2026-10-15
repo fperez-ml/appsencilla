@@ -20,6 +20,7 @@ import me.fperez.appsencilla.model.persistencia.ClienteDAO;
  * @author fperez
  */
 public class ClienteDAOImp implements ClienteDAO {
+
     private static final ClienteDAOImp clientDAO = new ClienteDAOImp();
 
     private final String url;
@@ -40,6 +41,7 @@ public class ClienteDAOImp implements ClienteDAO {
 
     public static ClienteDAOImp getInstance() {
         return clientDAO;
+
     }
 
     private String getURL() {
