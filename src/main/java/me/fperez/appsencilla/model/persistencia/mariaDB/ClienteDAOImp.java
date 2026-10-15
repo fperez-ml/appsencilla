@@ -21,7 +21,7 @@ import me.fperez.appsencilla.model.persistencia.ClienteDAO;
  */
 public class ClienteDAOImp implements ClienteDAO {
 
-    private static final ClienteDAOImp clientDAO = new ClienteDAOImp();
+    private static ClienteDAOImp clientDAO = null;
 
     private final String url;
     private final String user;
@@ -31,6 +31,7 @@ public class ClienteDAOImp implements ClienteDAO {
     private final String dbHostName;
 
     private ClienteDAOImp() {
+        //TODO: Eliminar la configuración
         this.dbHostName = "localhost";
         this.dbPort = "3306";
         this.dbName = "java-db";
@@ -39,7 +40,12 @@ public class ClienteDAOImp implements ClienteDAO {
         this.url = getURL();
     }
 
-    public static ClienteDAOImp getInstance() {
+    public static ClienteDAOImp getClienteDAO() {
+        
+        if(clientDAO == null){
+            clientDAO = new ClienteDAOImp();
+        }
+        
         return clientDAO;
 
     }
