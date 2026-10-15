@@ -56,7 +56,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     private void cargarClientes() {
         List<Cliente> clientes;
         try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getInstance();
+            ClienteDAO clienteDAO = new ClienteDAOImp();
             clientes = clienteDAO.list();
         } catch (RuntimeException ex) {
             logger.log(java.util.logging.Level.SEVERE, "Error cargando los clientes", ex);
