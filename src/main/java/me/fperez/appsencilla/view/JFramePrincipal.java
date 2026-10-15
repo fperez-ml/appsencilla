@@ -6,6 +6,8 @@ package me.fperez.appsencilla.view;
 
 import javax.swing.table.DefaultTableModel;
 import me.fperez.appsencilla.model.Cliente;
+import me.fperez.appsencilla.model.persistencia.ClienteDAO;
+import me.fperez.appsencilla.model.persistencia.mariaDB.ClienteDAOImp;
 
 /**
  *
@@ -14,6 +16,7 @@ import me.fperez.appsencilla.model.Cliente;
 public class JFramePrincipal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(JFramePrincipal.class.getName());
+    private final ClienteDAO clienteDAO = ClienteDAOImp.getInstance();
 
     /**
      * Creates new form JFramePrincipal
@@ -21,6 +24,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     public JFramePrincipal() {
         initComponents();
         this.iniTable();
+        this.cargarClientes();
         java.net.URL imgURL = getClass().getResource("/me/fperez/appsencilla/recursos/dummy_app.jpg");
         if (imgURL != null) {
             jLabelIcono.setIcon(new javax.swing.ImageIcon(imgURL));
@@ -36,9 +40,33 @@ public class JFramePrincipal extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     
-    public void altaCliente(Cliente cliente){
-        DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
-        dtm.addRow(cliente.clienteToArray());
+    public boolean altaCliente(Cliente cliente) {
+        try {
+            clienteDAO.create(cliente);
+            DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+            dtm.addRow(cliente.clienteToArray());
+            return true;
+        } catch (java.sql.SQLException ex) {
+            logger.log(java.util.logging.Level.SEVERE, "No se pudo guardar el cliente.", ex);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No se pudo guardar el cliente en la base de datos.",
+                    "Error de persistencia", javax.swing.JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+    }
+
+    private void cargarClientes() {
+        try {
+            DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+            for (Cliente cliente : clienteDAO.list()) {
+                dtm.addRow(cliente.clienteToArray());
+            }
+        } catch (java.sql.SQLException ex) {
+            logger.log(java.util.logging.Level.SEVERE, "No se pudieron cargar los clientes.", ex);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "No se pudieron cargar los clientes desde la base de datos.",
+                    "Error de persistencia", javax.swing.JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void iniTable(){

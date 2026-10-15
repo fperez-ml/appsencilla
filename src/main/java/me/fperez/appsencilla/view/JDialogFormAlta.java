@@ -170,8 +170,9 @@ public class JDialogFormAlta extends javax.swing.JDialog {
 
             Cliente cliente = new Cliente(nombre, appellidos, fechaAlta, provincia);
 
-            this.pantallaPrincipal.altaCliente(cliente);
-            this.dispose();
+            if (this.pantallaPrincipal.altaCliente(cliente)) {
+                this.dispose();
+            }
         }
     }//GEN-LAST:event_jButtonAltaActionPerformed
 
