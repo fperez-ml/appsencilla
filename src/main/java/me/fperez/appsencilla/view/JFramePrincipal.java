@@ -43,7 +43,7 @@ public class JFramePrincipal extends javax.swing.JFrame {
     
     public void altaCliente(Cliente cliente){
         try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getInstance();
+            ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
             clienteDAO.create(cliente);
             DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
             dtm.addRow(cliente.clienteToArray());
