@@ -12,13 +12,13 @@ import java.util.Date;
  */
 public class Cliente {
     private String nombre;
-    private String appellidos;
+    private String apellidos;
     private Date fechaAlta;
     private String provincia;
 
-    public Cliente(String nombre, String appellidos, Date fechaAlta, String provincia) {
+    public Cliente(String nombre, String apellidos, Date fechaAlta, String provincia) {
         this.nombre = nombre;
-        this.appellidos = appellidos;
+        this.apellidos = apellidos;
         this.fechaAlta = fechaAlta;
         this.provincia = provincia;
     }
@@ -27,8 +27,8 @@ public class Cliente {
         return nombre;
     }
 
-    public String getAppellidos() {
-        return appellidos;
+    public String getApellidos() {
+        return apellidos;
     }
 
     public Date getFechaAlta() {
@@ -43,8 +43,8 @@ public class Cliente {
         this.nombre = nombre;
     }
 
-    public void setAppellidos(String appellidos) {
-        this.appellidos = appellidos;
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos;
     }
 
     public void setFechaAlta(Date fechaAlta) {
@@ -61,8 +61,8 @@ public class Cliente {
     */
         return new String[]{
             this.nombre, 
-            this.appellidos, 
-            this.fechaAlta.toString(), 
+            this.apellidos, 
+            this.fechaAlta != null ? this.fechaAlta.toString() : "",
             this.provincia
         };
     }
