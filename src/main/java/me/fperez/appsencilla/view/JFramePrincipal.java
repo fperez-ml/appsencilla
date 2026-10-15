@@ -42,8 +42,17 @@ public class JFramePrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     
     public void altaCliente(Cliente cliente){
-        DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
-        dtm.addRow(cliente.clienteToArray());
+        try {
+            ClienteDAO clienteDAO = ClienteDAOImp.getInstance();
+            clienteDAO.create(cliente);
+            DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+            dtm.addRow(cliente.clienteToArray());
+        } catch (RuntimeException ex) {
+            logger.log(java.util.logging.Level.SEVERE, "Error dando de alta el cliente", ex);
+            JOptionPane.showMessageDialog(this,
+                    "No se pudo guardar el cliente. Consulte el registro para más detalles.",
+                    "Error al guardar cliente", JOptionPane.ERROR_MESSAGE);
+        }
     }
     
     private void iniTable(){
