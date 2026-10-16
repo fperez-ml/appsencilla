@@ -12,6 +12,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import me.fperez.appsencilla.model.Cliente;
 import me.fperez.appsencilla.model.persistencia.ClienteDAO;
 
@@ -21,6 +24,7 @@ import me.fperez.appsencilla.model.persistencia.ClienteDAO;
  */
 public class ClienteDAOImp implements ClienteDAO {
 
+    private static final Logger logger = Logger.getLogger(ClienteDAOImp.class.getName());
     private static ClienteDAOImp clientDAO = null;
 
     private final String url;
@@ -58,7 +62,8 @@ public class ClienteDAOImp implements ClienteDAO {
         try {
             return DriverManager.getConnection(this.url, this.user, this.password);
         } catch (SQLException e) {
-            throw new RuntimeException("Error conectando con la base de datos", e);
+            showErrorMessage("Error conectando con la base de datos: " + e.getMessage());
+            return null;
         }
     }
 
@@ -66,14 +71,18 @@ public class ClienteDAOImp implements ClienteDAO {
     public Cliente read(String pk) {
         String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM cliente WHERE nombre = '"
                 + pk + "'";
-        try (Connection con = getConnection(); Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)) {
-            if (rs.next()) {
-                return new Cliente(rs.getString("nombre"), rs.getString("apellidos"),
-                        new Date(rs.getDate("fechaAlta").getTime()), rs.getString("provincia"));
+        try (Connection con = getConnection()) {
+            if (con == null) {
+                return null;
+            }
+            try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+                if (rs.next()) {
+                    return new Cliente(rs.getString("nombre"), rs.getString("apellidos"),
+                            new Date(rs.getDate("fechaAlta").getTime()), rs.getString("provincia"));
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error leyendo el cliente", e);
+            showErrorMessage("Error leyendo el cliente: " + e.getMessage());
         }
         return null;
     }
@@ -85,10 +94,15 @@ public class ClienteDAOImp implements ClienteDAO {
                 + cliente.getApellidos() + "', '"
                 + new java.sql.Date(cliente.getFechaAlta().getTime()) + "', '"
                 + cliente.getProvincia() + "')";
-        try (Connection con = getConnection(); Statement st = con.createStatement()) {
-            st.executeUpdate(sql);
+        try (Connection con = getConnection()) {
+            if (con == null) {
+                return;
+            }
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate(sql);
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Error creando el cliente", e);
+            showErrorMessage("Error creando el cliente: " + e.getMessage());
         }
     }
 
@@ -98,20 +112,30 @@ public class ClienteDAOImp implements ClienteDAO {
                 + cliente.getApellidos() + "', fechaAlta = '"
                 + new java.sql.Date(cliente.getFechaAlta().getTime()) + "', provincia = '"
                 + cliente.getProvincia() + "' WHERE nombre = '" + cliente.getNombre() + "'";
-        try (Connection con = getConnection(); Statement st = con.createStatement()) {
-            st.executeUpdate(sql);
+        try (Connection con = getConnection()) {
+            if (con == null) {
+                return;
+            }
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate(sql);
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Error actualizando el cliente", e);
+            showErrorMessage("Error actualizando el cliente: " + e.getMessage());
         }
     }
 
     @Override
     public void delete(Cliente cliente) {
         String sql = "DELETE FROM cliente WHERE nombre = '" + cliente.getNombre() + "'";
-        try (Connection con = getConnection(); Statement st = con.createStatement()) {
-            st.executeUpdate(sql);
+        try (Connection con = getConnection()) {
+            if (con == null) {
+                return;
+            }
+            try (Statement st = con.createStatement()) {
+                st.executeUpdate(sql);
+            }
         } catch (SQLException e) {
-            throw new RuntimeException("Error borrando el cliente", e);
+            showErrorMessage("Error borrando el cliente: " + e.getMessage());
         }
     }
 
@@ -119,15 +143,25 @@ public class ClienteDAOImp implements ClienteDAO {
     public List<Cliente> list() {
         String sql = "SELECT nombre, apellidos, fechaAlta, provincia FROM cliente";
         List<Cliente> clientes = new ArrayList<>();
-        try (Connection con = getConnection(); Statement st = con.createStatement();
-                ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                clientes.add(new Cliente(rs.getString("nombre"), rs.getString("apellidos"),
-                        new Date(rs.getDate("fechaAlta").getTime()), rs.getString("provincia")));
+        try (Connection con = getConnection()) {
+            if (con == null) {
+                return clientes;
+            }
+            try (Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql)) {
+                while (rs.next()) {
+                    clientes.add(new Cliente(rs.getString("nombre"), rs.getString("apellidos"),
+                            new Date(rs.getDate("fechaAlta").getTime()), rs.getString("provincia")));
+                }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error listando los clientes", e);
+            showErrorMessage("Error listando los clientes: " + e.getMessage());
         }
         return clientes;
+    }
+
+    private void showErrorMessage(String errorMessage) {
+        logger.log(Level.SEVERE, errorMessage);
+        JOptionPane.showMessageDialog(null, errorMessage, "Error de base de datos",
+                JOptionPane.ERROR_MESSAGE);
     }
 }

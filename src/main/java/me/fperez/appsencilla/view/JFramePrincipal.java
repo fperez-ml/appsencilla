@@ -5,7 +5,6 @@
 package me.fperez.appsencilla.view;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
 import java.util.List;
 import me.fperez.appsencilla.model.Cliente;
 import me.fperez.appsencilla.model.persistencia.ClienteDAO;
@@ -42,23 +41,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     
     public void altaCliente(Cliente cliente){
-        try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
-            clienteDAO.create(cliente);
-            DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
-            dtm.addRow(cliente.clienteToArray());
-        } catch (RuntimeException ex) {
-            reportDatabaseError("Error dando de alta el cliente",
-                    "No se pudo guardar el cliente. Consulte el registro para más detalles.",
-                    "Error al guardar cliente", ex);
-        }
-    }
-
-    private void reportDatabaseError(String logMessage, String dialogMessage,
-            String dialogTitle, RuntimeException exception) {
-        logger.log(java.util.logging.Level.SEVERE, logMessage, exception);
-        JOptionPane.showMessageDialog(this, dialogMessage, dialogTitle,
-                JOptionPane.ERROR_MESSAGE);
+        ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
+        clienteDAO.create(cliente);
+        DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+        dtm.addRow(cliente.clienteToArray());
     }
     
     private void iniTable(){
@@ -69,16 +55,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }
 
     private void cargarClientes() {
-        List<Cliente> clientes;
-        try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
-            clientes = clienteDAO.list();
-        } catch (RuntimeException ex) {
-            reportDatabaseError("Error cargando los clientes",
-                    "No se pudieron cargar los clientes. Consulte el registro para más detalles.",
-                    "Error al cargar clientes", ex);
-            return;
-        }
+        ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
+        List<Cliente> clientes = clienteDAO.list();
 
         DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
         dtm.setRowCount(0);
