@@ -48,11 +48,17 @@ public class JFramePrincipal extends javax.swing.JFrame {
             DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
             dtm.addRow(cliente.clienteToArray());
         } catch (RuntimeException ex) {
-            logger.log(java.util.logging.Level.SEVERE, "Error dando de alta el cliente", ex);
-            JOptionPane.showMessageDialog(this,
+            reportDatabaseError("Error dando de alta el cliente",
                     "No se pudo guardar el cliente. Consulte el registro para más detalles.",
-                    "Error al guardar cliente", JOptionPane.ERROR_MESSAGE);
+                    "Error al guardar cliente", ex);
         }
+    }
+
+    private void reportDatabaseError(String logMessage, String dialogMessage,
+            String dialogTitle, RuntimeException exception) {
+        logger.log(java.util.logging.Level.SEVERE, logMessage, exception);
+        JOptionPane.showMessageDialog(this, dialogMessage, dialogTitle,
+                JOptionPane.ERROR_MESSAGE);
     }
     
     private void iniTable(){
@@ -68,10 +74,9 @@ public class JFramePrincipal extends javax.swing.JFrame {
             ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
             clientes = clienteDAO.list();
         } catch (RuntimeException ex) {
-            logger.log(java.util.logging.Level.SEVERE, "Error cargando los clientes", ex);
-            JOptionPane.showMessageDialog(this,
+            reportDatabaseError("Error cargando los clientes",
                     "No se pudieron cargar los clientes. Consulte el registro para más detalles.",
-                    "Error al cargar clientes", JOptionPane.ERROR_MESSAGE);
+                    "Error al cargar clientes", ex);
             return;
         }
 
