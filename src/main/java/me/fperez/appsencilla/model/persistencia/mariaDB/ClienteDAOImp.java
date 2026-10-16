@@ -4,6 +4,8 @@
  */
 package me.fperez.appsencilla.model.persistencia.mariaDB;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,6 +14,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 import me.fperez.appsencilla.model.Cliente;
 import me.fperez.appsencilla.model.persistencia.ClienteDAO;
 
@@ -31,13 +34,32 @@ public class ClienteDAOImp implements ClienteDAO {
     private final String dbHostName;
 
     private ClienteDAOImp() {
-        //TODO: Eliminar la configuración
-        this.dbHostName = "localhost";
-        this.dbPort = "3306";
-        this.dbName = "java-db";
-        this.user = "java-db";
-        this.password = "java-db";
+        Properties configuration = new Properties();
+        try (InputStream input = ClienteDAOImp.class.getClassLoader()
+                .getResourceAsStream("configuracion.properties")) {
+            if (input == null) {
+                throw new IllegalStateException("No se encontró configuracion.properties");
+            }
+            configuration.load(input);
+        } catch (IOException e) {
+            throw new IllegalStateException("No se pudo leer configuracion.properties", e);
+        }
+
+        this.dbHostName = requiredProperty(configuration, "db.host");
+        this.dbPort = requiredProperty(configuration, "db.port");
+        this.dbName = requiredProperty(configuration, "db.name");
+        this.user = requiredProperty(configuration, "db.user");
+        this.password = requiredProperty(configuration, "db.password");
         this.url = getURL();
+    }
+
+    private static String requiredProperty(Properties configuration, String key) {
+        String value = configuration.getProperty(key);
+        if (value == null || value.isBlank()) {
+            throw new IllegalStateException("Falta la propiedad requerida " + key
+                    + " en configuracion.properties");
+        }
+        return value;
     }
 
     public static ClienteDAOImp getClienteDAO() {
