@@ -6,6 +6,7 @@ package me.fperez.appsencilla.view;
 
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
+import java.util.logging.Level;
 import me.fperez.appsencilla.model.Cliente;
 import me.fperez.appsencilla.model.persistencia.ClienteDAO;
 import me.fperez.appsencilla.model.persistencia.mariaDB.ClienteDAOImp;
@@ -90,6 +91,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTableClientes);
 
         jButtonPrincipalSalir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -161,6 +167,13 @@ public class JFramePrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButtonPrincipalSalirActionPerformed
+
+    private void jTableClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableClientesMouseClicked
+        // TODO add your handling code here:
+        int row = this.jTableClientes.getSelectedRow();
+
+        logger.log(Level.INFO, String.format("Selected row: %s", row));
+    }//GEN-LAST:event_jTableClientesMouseClicked
 
     /**
      * @param args the command line arguments
