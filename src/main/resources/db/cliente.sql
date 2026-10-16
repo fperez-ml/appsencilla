@@ -1,4 +1,6 @@
 CREATE DATABASE IF NOT EXISTS `java-db`;
+CREATE USER IF NOT EXISTS 'java-db'@'localhost' IDENTIFIED BY 'java-db';
+GRANT ALL PRIVILEGES ON `java-db`.* TO 'java-db'@'localhost';
 USE `java-db`;
 
 CREATE TABLE IF NOT EXISTS cliente (

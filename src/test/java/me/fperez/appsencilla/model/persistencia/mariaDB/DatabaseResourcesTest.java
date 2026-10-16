@@ -20,6 +20,10 @@ class DatabaseResourcesTest {
         }
 
         assertTrue(script.contains("CREATE DATABASE IF NOT EXISTS `java-db`"));
+        assertTrue(script.contains(
+                "CREATE USER IF NOT EXISTS 'java-db'@'localhost' IDENTIFIED BY 'java-db'"));
+        assertTrue(script.contains(
+                "GRANT ALL PRIVILEGES ON `java-db`.* TO 'java-db'@'localhost'"));
         assertTrue(script.contains("USE `java-db`"));
         assertTrue(script.contains("CREATE TABLE IF NOT EXISTS cliente"));
         assertTrue(script.contains("ClienteID INT NOT NULL AUTO_INCREMENT"));
