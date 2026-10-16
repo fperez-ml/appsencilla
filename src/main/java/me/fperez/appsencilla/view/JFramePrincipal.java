@@ -5,8 +5,8 @@
 package me.fperez.appsencilla.view;
 
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
 import java.util.List;
+import java.util.logging.Level;
 import me.fperez.appsencilla.model.Cliente;
 import me.fperez.appsencilla.model.persistencia.ClienteDAO;
 import me.fperez.appsencilla.model.persistencia.mariaDB.ClienteDAOImp;
@@ -42,17 +42,10 @@ public class JFramePrincipal extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     
     public void altaCliente(Cliente cliente){
-        try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
-            clienteDAO.create(cliente);
-            DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
-            dtm.addRow(cliente.clienteToArray());
-        } catch (RuntimeException ex) {
-            logger.log(java.util.logging.Level.SEVERE, "Error dando de alta el cliente", ex);
-            JOptionPane.showMessageDialog(this,
-                    "No se pudo guardar el cliente. Consulte el registro para más detalles.",
-                    "Error al guardar cliente", JOptionPane.ERROR_MESSAGE);
-        }
+        ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
+        clienteDAO.create(cliente);
+        DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
+        dtm.addRow(cliente.clienteToArray());
     }
     
     private void iniTable(){
@@ -63,17 +56,8 @@ public class JFramePrincipal extends javax.swing.JFrame {
     }
 
     private void cargarClientes() {
-        List<Cliente> clientes;
-        try {
-            ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
-            clientes = clienteDAO.list();
-        } catch (RuntimeException ex) {
-            logger.log(java.util.logging.Level.SEVERE, "Error cargando los clientes", ex);
-            JOptionPane.showMessageDialog(this,
-                    "No se pudieron cargar los clientes. Consulte el registro para más detalles.",
-                    "Error al cargar clientes", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        ClienteDAO clienteDAO = ClienteDAOImp.getClienteDAO();
+        List<Cliente> clientes = clienteDAO.list();
 
         DefaultTableModel dtm = (DefaultTableModel) this.jTableClientes.getModel();
         dtm.setRowCount(0);
@@ -107,6 +91,11 @@ public class JFramePrincipal extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        jTableClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTableClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTableClientes);
 
         jButtonPrincipalSalir.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
@@ -178,6 +167,13 @@ public class JFramePrincipal extends javax.swing.JFrame {
         // TODO add your handling code here:
         this.dispose();
     }//GEN-LAST:event_jButtonPrincipalSalirActionPerformed
+
+    private void jTableClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableClientesMouseClicked
+        // TODO add your handling code here:
+        int row = this.jTableClientes.getSelectedRow();
+
+        logger.log(Level.INFO, String.format("Selected row: %s", row));
+    }//GEN-LAST:event_jTableClientesMouseClicked
 
     /**
      * @param args the command line arguments

@@ -4,7 +4,6 @@
  */
 package me.fperez.appsencilla.model.persistencia;
 
-
 import java.util.List;
 import me.fperez.appsencilla.model.Cliente;
 
