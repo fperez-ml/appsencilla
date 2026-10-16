@@ -19,6 +19,8 @@ class DatabaseResourcesTest {
             script = new String(input.readAllBytes(), StandardCharsets.UTF_8);
         }
 
+        assertTrue(script.contains("CREATE DATABASE IF NOT EXISTS `java-db`"));
+        assertTrue(script.contains("USE `java-db`"));
         assertTrue(script.contains("CREATE TABLE IF NOT EXISTS cliente"));
         assertTrue(script.contains("ClienteID INT NOT NULL AUTO_INCREMENT"));
         long sampleRows = script.lines()
@@ -38,7 +40,7 @@ class DatabaseResourcesTest {
 
         assertEquals("localhost", configuration.getProperty("db.host"));
         assertTrue(configuration.getProperty("db.port") != null);
-        assertTrue(configuration.getProperty("db.name") != null);
+        assertEquals("java-db", configuration.getProperty("db.name"));
         assertTrue(configuration.getProperty("db.user") != null);
         assertTrue(configuration.getProperty("db.password") != null);
     }
